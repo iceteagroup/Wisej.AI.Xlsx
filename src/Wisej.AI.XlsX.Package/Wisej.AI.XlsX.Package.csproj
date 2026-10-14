@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>$(NetStandardVersion);$(NetCoreVersion)</TargetFrameworks>
+		<IncludeBuildOutput>false</IncludeBuildOutput>
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<RunPostBuildEvent>Always</RunPostBuildEvent>
+		<PackageId>Wisej-4-AI-XlsX</PackageId>
+		<Product>Wisej-AI</Product>
+		<Authors>Ice Tea Group</Authors>
+		<Version>$(FileVersion)</Version>
+		<Description>High fidelity XLSX to Markdown/text extraction for LLM context: cell values with their number formats, sheets, tables, merged cells, hyperlinks, formulas, comments, charts and images.</Description>
+		<PackageLicenseFile>EULA-3.2.txt</PackageLicenseFile>
+		<PackageOutputPath>..\..\artifacts</PackageOutputPath>
+		<NoWarn>$(NoWarn);NU5128</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<XlsXBin>$(MSBuildThisFileDirectory)..\Wisej.AI.XlsX\bin\$(Configuration)\</XlsXBin>
+		<ArtifactsBin>$(MSBuildThisFileDirectory)..\..\artifacts\bin\</ArtifactsBin>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="DocumentFormat.OpenXml" Version="3.1.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- Build order only: the binaries are packed from the bin folder below. -->
+		<ProjectReference Include="..\Wisej.AI.XlsX\Wisej.AI.XlsX.csproj" ReferenceOutputAssembly="false" PrivateAssets="all" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- EULA -->
+		<None Include="EULA-3.2.txt" Pack="true" PackagePath="" />
+
+		<!-- Wisej.AI.XlsX -->
+		<None Include="$(XlsXBin)$(NetStandardVersion)\Wisej.AI.XlsX.dll" Pack="true" PackagePath="lib\$(NetStandardVersion)" />
+		<None Include="$(XlsXBin)$(NetStandardVersion)\Wisej.AI.XlsX.xml" Pack="true" PackagePath="lib\$(NetStandardVersion)" />
+		<None Include="$(XlsXBin)$(NetCoreVersion)\Wisej.AI.XlsX.dll" Pack="true" PackagePath="lib\$(NetCoreVersion)" />
+		<None Include="$(XlsXBin)$(NetCoreVersion)\Wisej.AI.XlsX.xml" Pack="true" PackagePath="lib\$(NetCoreVersion)" />
+	</ItemGroup>
+
+	<Target Name="CopyWisejArtifacts" AfterTargets="Build">
+		<Copy SourceFiles="$(XlsXBin)$(NetStandardVersion)\Wisej.AI.XlsX.dll"
+			  DestinationFolder="$(ArtifactsBin)$(NetStandardVersion)\"
+			  SkipUnchangedFiles="true"
+			  OverwriteReadOnlyFiles="true" />
+
+		<Copy SourceFiles="$(XlsXBin)$(NetCoreVersion)\Wisej.AI.XlsX.dll"
+			  DestinationFolder="$(ArtifactsBin)$(NetCoreVersion)\"
+			  SkipUnchangedFiles="true"
+			  OverwriteReadOnlyFiles="true" />
+	</Target>
+
+</Project>
